@@ -1,0 +1,7 @@
+"0","RNGkind(sample.kind = ""Rounding"")"
+"2","non-uniform 'Rounding' sampler used"
+"0","set.seed(123)"
+"0",""
+"0","index <- sample(x = nrow(jabodetabek), size =  0.8*nrow(jabodetabek))"
+"0","train <- jabodetabek[index, ]"
+"0","validation <- jabodetabek[-index, ]"

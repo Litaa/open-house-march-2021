@@ -1,0 +1,238 @@
+---
+title: "COVID-19 World Vaccination Progress"
+author: "Dyah Nurlita S"
+date: "`r format(Sys.Date(), '%B %e, %Y')`"
+output:
+  html_document:
+    theme: cosmo
+    highlight: tango
+    toc: yes
+    toc_float:
+      collapsed: no
+    df_print: paged
+    code_folding: hide
+  pdf_document:
+    toc: yes
+---
+<style>
+h1.title {
+  text-align: center;
+}
+h4.author {
+  text-align: center;
+}
+h4.date {
+  text-align: center;
+}
+
+body {
+text-align: justify}
+
+</style>
+
+```{r setup, include=FALSE}
+# clear-up the environment
+rm(list = ls())
+
+# chunk options
+knitr::opts_chunk$set(
+  message = FALSE,
+  warning = FALSE,
+  fig.align = "center",
+  comment = "#>"
+)
+
+options(scipen = 9)
+```
+
+# Case Study
+
+We all agree that 2020 was a year like no other, the world was marked by the Sars-CoV-2 virus pandemic. It caused millions of people to die, tens of millions became sick, hundreds of millions were quarantined, and billions of people have had their lives changed - including us. The pandemic, though it continues to develop, there is light in this dark tunnel - **a vaccine**.
+
+Vaccines typically require years of research and testing before reaching the clinic, but in 2020, scientists embarked on a race to produce safe and effective coronavirus vaccines in record time - many thanks to them!
+
+Today we will take look at the COVID-19 World Vaccination Progress dataset and let's gain some insights on how the vaccination progresses.
+
+```{r warning=FALSE, message=FALSE}
+library(data.table)
+library(dplyr)
+library(stringr)
+library(ggplot2)
+library(plotly)
+library(glue)
+library(sp)
+library(maps)
+library(maptools)
+library(leaflet)
+```
+
+```{r}
+# read data
+vaccine <-  read.csv("country_vaccinations.csv")
+head(vaccine,5)
+```
+
+The data contains the following information:
+
+- **Country** - this is the country for which the vaccination information is provided;
+- **Date** - date for the data entry; for some of the dates we have only the daily vaccinations, for others, only the (cumulative) total;
+- **Total number of vaccinations** - this is the absolute number of total immunizations in the country;
+- **Total number of people vaccinated** - a person, depending on the immunization scheme, will receive one or more (typically 2) vaccines; at a certain moment, the number of vaccination might be larger than the number of people;
+- **Total number of people fully vaccinated** - this is the number of people that received the entire set of immunization according to the immunization scheme (typically 2); at a certain moment in time, there might be a certain number of people that received one vaccine and another number (smaller) of people that received all vaccines in the scheme;
+- **Daily vaccinations** - for a certain data entry, the number of vaccination for that date/country;
+- **Total vaccinations per hundred** - ratio (in percent) between vaccination number and total population up to the date in the country;
+- **Total number of people vaccinated per hundred** - ratio (in percent) between population immunized and total population up to the date in the country;
+- **Total number of people fully vaccinated per hundred** - ratio (in percent) between population fully immunized and total population up to the date in the country;
+- **Daily vaccinations per million** - ratio (in ppm) between vaccination number and total population for the current date in the country;
+- **Vaccines used in the country** - total number of vaccines used in the country (up to date);
+- **Source name** - source of the information (national authority, international organization, local organization etc.);
+
+## Data Preprocessing
+It's a good practice that we cleanse our data before going any further with the analysis.
+
+### Convert Data Types
+
+We have studied 2 new data types namely `datetime64` and `category`. Which columns must be converted?
+
+* `datetime64`: date
+* `category`: country, vaccines, source_name
+
+```{r}
+vaccine <- vaccine %>% 
+  mutate(date = as.Date(date),
+         across(c(country,vaccines,source_name), as.factor))
+```
+
+## Analysis
+
+Before going any deeper, find out the time range of our analysis provided by the dataset:
+
+```{r}
+summary(vaccine['date'])
+```
+### Vaccine Types
+
+As of February 11th, 2021, researchers are testing 69 vaccines in clinical trials on humans, and 20 have reached the final stages of testing. At least 89 preclinical vaccines are under active investigation in animals. [Source: The New York Times](https://www.nytimes.com/interactive/2020/science/coronavirus-vaccine-tracker.html)
+
+Find out which combination of vaccine types are used by many countries?
+
+```{r}
+country_vaccine <- vaccine %>% 
+  distinct(country, vaccines)
+```
+
+
+```{r}
+vec <- unlist(strsplit(as.character(country_vaccine$vaccines),", "))
+
+vaccine_count <- as.data.frame(vec) %>% 
+          count(vec) %>% 
+          arrange(desc(n))
+vaccine_count
+```
+
+
+
+#### Visualization
+
+```{r}
+vaccine_count2 <- vaccine_count %>% 
+  mutate(label = glue("Vaccine: {vec}
+                      Count: {n}"))
+fig <- ggplot(data=vaccine_count2, mapping=aes(x=n, y=reorder(vec,n), text=label)) +
+  geom_col(aes(fill=n), show.legend = F) +
+  theme_minimal() +
+  labs(
+    title = "Number of Country use Types of Vaccine",
+    y = "Vaccines",
+    x = NULL
+  ) +
+  scale_fill_gradient(low = "seagreen1", high = "purple") + 
+  theme(panel.background = element_rect(fill = "white"),
+        panel.grid = element_line(color = "snow2"))
+ggplotly(fig,tooltip = "text")
+```
+
+
+
+
+Currently, Indonesia using the Sinovac vaccine. From the result above there are 2 country that using Sinovac vaccine. Say we want to get the information about which country that using vaccine Sinovac other than Indonesia.
+
+```{r}
+# additional: conditional subsetting
+country_vaccine %>% filter(str_detect(vaccines, 'Sinovac'))
+
+```
+
+### Country Daily Vaccinations
+
+In this section, we would like to know which country is the leader in vaccination?
+
+First, let's find out top 5 countries with the highest sum of `daily_vaccinations`
+
+```{r}
+top5_country <- 
+head(vaccine %>% 
+  filter(country != 'England') %>% 
+  group_by(country) %>% 
+  summarise(total = sum(daily_vaccinations, na.rm=TRUE)) %>% 
+  arrange(desc(total)), 5)
+top5_country
+```
+
+#### Visualization
+
+```{r results='hide'}
+plotdata <- top5_country %>%
+  mutate(country = recode(country,
+                          "United States"    = "USA",
+                         "United Kingdom"    = "UK"))
+plotdata
+```
+
+```{r}
+world <- map("world", fill=TRUE, plot=FALSE)
+world_map <- map2SpatialPolygons(world, sub(":.*$", "", world$names))
+world_map <- SpatialPolygonsDataFrame(world_map,
+                                      data.frame(country=names(world_map), 
+                                                 stringsAsFactors=FALSE), 
+                                      FALSE)
+
+target <- subset(world_map, country %in% plotdata$country)
+target_sf <- sf::st_as_sf(target)
+# 
+target_sf <- target_sf %>%
+  left_join(plotdata, by = c("country"))# %>%
+
+pal <- colorNumeric(palette = "YlOrRd", domain = target_sf$total)
+
+labels <- glue("<b>{target_sf$country}</b><br>
+    Number of Daily Vaccine: {prettyNum(target_sf$total, big.mark = ',')}") %>%
+    lapply(htmltools::HTML)
+
+
+leaflet(target_sf) %>% 
+  addTiles() %>% 
+  addPolygons(weight=2,
+              label=labels,
+              fillColor = ~pal(target_sf$total),
+              fillOpacity = .8,
+              color = "grey",
+              highlight = highlightOptions(
+                weight = 2,
+                color = "black",
+                bringToFront = TRUE,
+                opacity = 0.8
+              ))%>% 
+  addLegend(
+    pal = pal,
+    values = ~total,
+    labels = ~total,
+    opacity = 1,
+    title = "Vaccine Number :",
+    position = "bottomright"
+  )
+```
+
+
+

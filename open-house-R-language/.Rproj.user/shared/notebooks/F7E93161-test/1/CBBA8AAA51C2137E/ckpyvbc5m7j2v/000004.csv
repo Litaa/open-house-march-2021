@@ -1,0 +1,1 @@
+"0","#%>% filter(luas_bangunan < 500 & luas_tanah < 350 & kamar_tidur < 5)"

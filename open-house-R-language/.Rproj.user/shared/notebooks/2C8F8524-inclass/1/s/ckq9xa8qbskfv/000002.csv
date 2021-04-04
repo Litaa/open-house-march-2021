@@ -1,0 +1,8 @@
+"0","plotdata <- top5_country %>%"
+"0","  # rename(region = country,"
+"0","  #        value = total) %>%"
+"0","  #mutate(region = tolower(region)) %>%"
+"0","  mutate(country = recode(country,"
+"0","                          ""United States""    = ""USA"","
+"0","                         ""United Kingdom""    = ""UK""))"
+"0","plotdata"

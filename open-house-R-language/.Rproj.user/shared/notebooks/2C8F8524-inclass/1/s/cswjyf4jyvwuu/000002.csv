@@ -1,0 +1,3 @@
+"0","# read data"
+"0","vaccine <-  read.csv(""country_vaccinations.csv"")"
+"0","head(vaccine,5)"

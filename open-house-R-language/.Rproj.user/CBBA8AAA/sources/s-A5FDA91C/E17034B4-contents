@@ -1,0 +1,102 @@
+---
+title: "Algoritma Data Science Academy"
+author: "Algoritma Team"
+date: "`r Sys.Date()`"
+output: 
+  revealjs::revealjs_presentation:
+    self_contained: false
+    reveal_plugins: ["zoom", "notes", "chalkboard", "menu"]
+    reveal_options:
+      center: true
+      chalkboard: 
+        theme: black
+        toggleNotesButton: true
+      menu:
+        numbers: true
+---
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(
+  message = FALSE,
+  warning = FALSE,
+  fig.asp = 0.75,
+  fig.align = "center",
+  out.width = "100%",
+  collapse = TRUE,
+  comment = "#>"
+)
+
+library(ggplot2)
+library(tidyverse)
+library(plotly)
+
+```
+
+# Learn Data Science by Building
+
+## **What is Data Science?**
+
+## An act of getting **powerful insights** from data
+
+## **Data Science for Data-driven Industry**
+
+<style>
+.reveal section img { background:none; border:none; box-shadow:none; }
+</style>
+
+```{r echo=FALSE, fig.cap="Source: Sharma, 2019"}
+knitr::include_graphics("image/Data-Science-use-cases.png")
+```
+
+
+##
+```{r echo=FALSE, fig.cap="Source:Jon CohenJan, 2020"}
+knitr::include_graphics("image/ncov-wu.png")
+```
+
+
+## **Multi-disciplinary Field**
+
+```{r echo=FALSE, fig.cap="Source: "}
+knitr::include_graphics("image/datascience.jpg")
+```
+
+## **The Toolset**
+
+```{r echo=FALSE}
+knitr::include_graphics("image/ncov-wu.png")
+```
+
+![](image/rnpy.PNG)
+
+## Why learn R and Python?
+
+```{r echo=FALSE, fig.cap="Packages"}
+knitr::include_graphics("image/ggplot_hive-removebg.png")
+```
+
+
+* R & Python widely used in data science 
+* Newbie Friendly
+* Ready for Big Data
+
+##
+
+```{r echo=FALSE}
+knitr::include_graphics("image/compR.png")
+```
+
+
+
+* Used by Major Companies
+* Has a Large and Welcoming Community
+* is Open Source
+
+## 
+
+```{r echo=FALSE}
+knitr::include_graphics("image/datascienceflow.jpg")
+```
+
+
+# Happy Learning and Coding! :)

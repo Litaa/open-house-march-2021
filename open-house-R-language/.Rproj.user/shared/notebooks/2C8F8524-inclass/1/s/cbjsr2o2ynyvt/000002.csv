@@ -1,0 +1,8 @@
+"0","vec <- unlist(strsplit(as.character(country_vaccine$vaccines),"", ""))"
+"0",""
+"0","library(dplyr)"
+"0",""
+"0","vaccine_count <- as.data.frame(vec) %>% "
+"0","          count(vec) %>% "
+"0","          arrange(desc(n))"
+"0","vaccine_count"

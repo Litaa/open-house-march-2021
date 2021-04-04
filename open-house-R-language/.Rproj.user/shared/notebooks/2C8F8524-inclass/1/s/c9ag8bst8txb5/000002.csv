@@ -1,0 +1,4 @@
+"0","WorldCountry <-geojsonio::geojson_read(""./GeoData/countries.geo.json"", what = ""sp"")
+"
+"2","Error: File does not exist. Create it, or fix the path.
+"

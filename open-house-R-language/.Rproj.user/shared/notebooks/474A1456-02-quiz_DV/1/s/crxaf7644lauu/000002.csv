@@ -1,0 +1,2 @@
+"0","loan_phil$month <- month(loan_phil$posted_time, label = T)"
+"0","head(loan_phil)"

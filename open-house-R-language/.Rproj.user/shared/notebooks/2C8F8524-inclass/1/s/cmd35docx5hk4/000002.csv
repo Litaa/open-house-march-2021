@@ -1,0 +1,6 @@
+"0","top5_country <- "
+"0","head(vaccine %>% "
+"0","  filter(country != 'England') %>% "
+"0","  group_by(country) %>% "
+"0","  summarise(total = sum(daily_vaccinations, na.rm=TRUE)) %>% "
+"0","  arrange(desc(total)), 5)"

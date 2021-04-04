@@ -1,0 +1,5 @@
+"0","# aggregate"
+"0","loan_agg <- aggregate(funding_duration ~ month + repayment_interval, data = loan_phil, FUN = mean)"
+"0",""
+"0","# for question below"
+"0","loan_agg[order(loan_agg$funding_duration, decreasing = T),]"

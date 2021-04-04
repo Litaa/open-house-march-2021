@@ -1,0 +1,6 @@
+"0","jabodetabek <- jabodetabek %>% "
+"0","  mutate(kabupaten = as.factor(kabupaten)) %>% "
+"0","  select(-c(""nama"", ""alamat"",""kecamatan""))"
+"2","Error in (function (classes, fdef, mtable)  : 
+  unable to find an inherited method for function ‘select’ for signature ‘""data.frame""’
+"

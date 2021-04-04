@@ -1,0 +1,7 @@
+"0","# substraction"
+"0","# loan_phil$funding_duration <- (as.numeric(loan_phil$funded_time-loan_phil$posted_time))/60"
+"0",""
+"0","# difftime"
+"0","loan_phil$funding_duration <- difftime(time1 = loan_phil$funded_time,"
+"0","                                       time2 =  loan_phil$posted_time,"
+"0","                                       unit = ""hours"")"
